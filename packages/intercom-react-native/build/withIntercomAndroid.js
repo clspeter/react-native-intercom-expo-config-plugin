@@ -37,10 +37,11 @@ function getMainNotificationService(packageName) {
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.intercom.reactnative.IntercomModule;
+import expo.modules.notifications.service.delegates.FirebaseMessagingDelegate;
 
 
 public class MainNotificationService extends FirebaseMessagingService {
-
+  private final FirebaseMessagingDelegate firebaseMessagingDelegate = new FirebaseMessagingDelegate(this);
   @Override public void onNewToken(String refreshedToken) {
     IntercomModule.sendTokenToIntercom(getApplication(), refreshedToken);
   }
@@ -49,7 +50,8 @@ public class MainNotificationService extends FirebaseMessagingService {
     if (IntercomModule.isIntercomPush(remoteMessage)) {
       IntercomModule.handleRemotePushMessage(getApplication(), remoteMessage);
     } else {
-      // HANDLE NON-INTERCOM MESSAGE
+     // HANDLE NON-INTERCOM MESSAGE
+      firebaseMessagingDelegate.onMessageReceived(remoteMessage);
     }
   }
 }`;
